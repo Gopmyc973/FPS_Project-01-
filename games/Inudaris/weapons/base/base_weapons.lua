@@ -1,13 +1,12 @@
 local Weapons = {}
 Weapons.__index = Weapons
 
-function lerp(a,b,t) return a * (1-t) + b * t end
-
+ 
 function Weapons:Init(player)
 	bullets = {}
 	bullet = require("games/Inudaris/weapons/bullet/base/base_bullet")
-	table.insert(bullets, 1, bullet(player))
-	player.weapon.bullet.number = 0
+	player.weapon.bullets = bullet(player)
+    table.insert(bullets, player.weapon.bullets)
 end
 
 function Weapons:shoot(player, dt)
@@ -20,8 +19,8 @@ function Weapons:shoot(player, dt)
 			player.weapon.sound:play()
 			player.weapon.sound_socket:setVolume(0.3)
 			player.weapon.sound_socket:play()
-			for x = 1, #bullets do
-				bullets[x]:Fire(player)
+			if player.weapon.bullets ~= nil then
+				player.weapon.bullets:Fire(player)
 			end
 		else
 			player.weapon.IsFireing = false
@@ -127,8 +126,8 @@ function Weapons:draw(player)
 	player.weapon.model:rotateY(-1.5)
 	if player.weapon.draw then
 		dream:draw(player.weapon.model) 
-		for x = 1, #bullets do
-			bullets[x]:draw(player)
+		if player.weapon.bullets ~= nil then
+			player.weapon.bullets:draw(player)
 		end
 	end
 end
